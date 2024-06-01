@@ -2,18 +2,29 @@ package challenge.literalura.demo;
 
 import challenge.literalura.demo.repository.AutorRepository;
 import challenge.literalura.demo.repository.LivroRepository;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
-import java.util.Arrays;
+import java.net.URI;
+import java.util.List;
 import java.util.Scanner;
 
-@ComponentScan("challenge.literalura.demo.repository")
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
+    private static final String WELCOME_MESSAGE = """
+            \n[1] Perquisar livro pelo titulo
+            [2] Listar todos os livros de um autor
+            [3] Presquisar autor
+            [4] Listar autores vivos em um ano especifico
+            [5] Listar livros em um determinado idioma
+            [7] Sair
+            Escolha uma opção válida:""";
     @Autowired
     private LivroRepository books;
     @Autowired
@@ -26,44 +37,45 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         var consoleInput = new Scanner(System.in);
-        var unName = new UnName(books,authors);
-        var running = true;
-        while (running) {
-            var input = consoleInput.nextLine().split(" ");
-            switch (input[0]) {
-                case "close" -> running = false;
-                case "search" -> {
-                    var name = Arrays.stream(input).filter(str -> !str.equals("search")).toArray();
-                    var resultado = unName.searchBook(tostring(name));
-                    if (!resultado.isEmpty()) {
-                        resultado.forEach(System.out::println);
-                    } else {
-                        System.out.println("Nenhum resultado encontrado!");
-                    }
+        while (true) {
+            System.out.println(WELCOME_MESSAGE);
+            var choice = consoleInput.nextInt();
+            var arg = consoleInput.nextLine();
+            List list;
+            switch (choice) {
+                case 1 -> {
+                    list = searchBook(arg);
+                    books.saveAll(list);
                 }
-                case "list" -> {
-                    if (input.length == 1) {
-                        unName.searchAuthor("").forEach(System.out::println);
-                    } else {
-                        unName.searchAuthor(input[1]).forEach(System.out::println);
-                    }
+                case 2 -> list = authors.findOneByName(arg).getLivros();
+                case 3 -> list = authors.findByName(arg);
+                case 4 -> list = authors.findByAliveYear(Integer.parseInt(arg.strip()));
+                case 5 -> list = books.findByLanguage(arg);
+                case 6 -> list = books.findAllSorted();
+                case 7 -> {
+                    return;
                 }
-                case "alive" -> unName.listAlive(Integer.parseInt(input[1])).forEach(System.out::println);
-                case "language" -> unName.listLanguage(input[1]).forEach(System.out::println);
-                case "all" -> unName.listAllByAthor(input[1]).forEach(System.out::println);
-                case "" -> {}
-                default -> System.out.println("Comando invalido! Para ajuda digite help.");
+                default -> {
+                    System.out.println("Digite uma opção valida!");
+                    continue;
+                }
+            }
+            if (!list.isEmpty()) {
+                list.forEach(System.out::println);
+            } else {
+                System.out.println("Nada encontrado");
             }
         }
-        consoleInput.close();
     }
 
-    public static String tostring(Object... args) {
-        var str = new StringBuilder();
-        for (var arg : args) {
-            str.append((String) arg).append(' ');
+    private List<Livro> searchBook(String name) {
+        final String url = "https://gutendex.com/books/search=" + name.replace(" ", "%20");
+        try {
+            var mapper = new ObjectMapper();
+            var jsonArray = mapper.readTree(URI.create(url).toURL()).get("results");
+            return mapper.readValue(jsonArray.traverse(), new TypeReference<>() {});
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        str.deleteCharAt(str.length() - 1);
-        return str.toString();
     }
 }

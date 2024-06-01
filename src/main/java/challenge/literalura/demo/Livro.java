@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "Livros")
 @JsonIgnoreProperties(ignoreUnknown = true,value = {"id"})
-public class Livro implements Comparable<Livro>{
+public class Livro{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,9 +68,5 @@ public class Livro implements Comparable<Livro>{
         return downloads;
     }
 
-    @Override
-    public int compareTo(Livro livro) {
-        return this.title.compareTo(livro.title);
-    }
 }
 
