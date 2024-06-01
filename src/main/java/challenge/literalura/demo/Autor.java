@@ -13,13 +13,14 @@ public class Autor {
     private String name;
     private Integer birth_year;
     private Integer death_year;
-    @OneToMany(mappedBy = "authors",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "authors", fetch = FetchType.EAGER)
     private List<Livro> livros;
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonCreator
-    public Autor(@JsonProperty("name")       String name,
+    public Autor(@JsonProperty("name") String name,
                  @JsonProperty("birth_year") Integer birth_year,
                  @JsonProperty("death_year") Integer death_year) {
         this.name = String.join(" ", Arrays.stream(name.split(", ")).toList().reversed());
@@ -48,6 +49,9 @@ public class Autor {
 
     @Override
     public String toString() {
-        return String.format("%s, %d-%d",name,birth_year,death_year);
+        return String.format("----AUTOR----\nnome: %s\nnasceu em: %d\nmorreu em: %d",
+                name,
+                birth_year,
+                death_year);
     }
 }
