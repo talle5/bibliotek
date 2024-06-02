@@ -38,16 +38,6 @@ public class Livro{
         this.downloads = downloads;
     }
 
-    @Override
-    public String toString() {
-        return String.format("---- LIVRO ----\nTitulo: %s\nAutor: %s\nIdiomas: %s\nDownloads: %d",
-                title,
-//                StringUtils.collectionToDelimitedString(authors, " e "),
-                (authors == null || authors.getName().equals("Anonymous")) ? "Desconhecido" : authors.getName(),
-                String.join(", ", languages),
-                downloads);
-    }
-
     public String getTitle() {
         return title;
     }
@@ -68,5 +58,13 @@ public class Livro{
         return downloads;
     }
 
+    @Override
+    public String toString() {
+        return String.format("---- LIVRO ----\nTitulo: %s\nAutor: %s\nIdiomas: %s\nDownloads: %d\n",
+                title,
+                (authors == null || authors.getName().equals("Anonymous")) ? "Desconhecido" : authors.getName(),
+                String.join(", ", languages),
+                downloads);
+    }
 }
 

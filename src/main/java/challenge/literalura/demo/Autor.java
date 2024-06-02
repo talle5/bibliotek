@@ -49,7 +49,7 @@ public class Autor {
 
     @Override
     public String toString() {
-        return String.format("----AUTOR----\nnome: %s\nnasceu em: %d\nmorreu em: %d",
+        return String.format("----AUTOR----\nNome: %s\nNasceu em: %d\nMorreu em: %d\n",
                 name,
                 birth_year,
                 death_year);
