@@ -7,6 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AutorRepository extends JpaRepository<Autor, Long> {
+
+    @Query("select a from Autor a order by a.name")
+    List<Autor> findAllSorted();
+
     @Query("select a from Autor a where a.name ilike %:name%")
     Autor findOneByName(String name);
 
