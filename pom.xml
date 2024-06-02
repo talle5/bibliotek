@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>challenge.literalura</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>bibliotek</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for challenge literalura</description>
+	<name>bibliotek</name>
+	<description>console line application to use gutendex api</description>
 	<properties>
 		<java.version>22</java.version>
 	</properties>
@@ -32,11 +32,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.17.1</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>
